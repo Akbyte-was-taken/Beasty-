@@ -1,0 +1,634 @@
+/* =================================
+GLOBAL
+================================= */
+
+*{
+box-sizing:border-box;
+}
+
+body,html{
+margin:0;
+padding:0;
+width:100%;
+height:100%;
+background:#050505;
+overflow:hidden;
+color:white;
+text-align:center;
+font-family:'Outfit',sans-serif;
+
+-webkit-font-smoothing:antialiased;
+-moz-osx-font-smoothing:grayscale;
+}
+
+#scene-3d-container,
+#room,
+.firework,
+.xp,
+.diamond{
+will-change:transform,opacity;
+}
+
+
+/* =================================
+MINECRAFT BACKGROUND
+================================= */
+
+#minecraft-bg{
+
+position:fixed;
+top:0;
+left:0;
+
+width:100vw;
+height:100vh;
+
+z-index:-2;
+
+background:
+repeating-linear-gradient(
+0deg,
+#6b4423 0px,
+#6b4423 16px,
+#5a381c 16px,
+#5a381c 32px
+),
+repeating-linear-gradient(
+90deg,
+#6b4423 0px,
+#6b4423 16px,
+#5a381c 16px,
+#5a381c 32px
+);
+
+image-rendering:pixelated;
+
+}
+
+#minecraft-bg::after{
+
+content:"";
+position:absolute;
+top:0;
+left:0;
+width:100%;
+height:100%;
+
+background:radial-gradient(
+circle at center,
+transparent 30%,
+rgba(0,0,0,.6) 100%
+);
+
+}
+
+
+/* =================================
+SHADERS
+================================= */
+
+#shader-vignette{
+position:absolute;
+width:100vw;
+height:100vh;
+background:radial-gradient(circle,transparent 40%,rgba(0,0,0,.8) 100%);
+pointer-events:none;
+z-index:15;
+}
+
+#shader-scanlines{
+position:absolute;
+width:100vw;
+height:100vh;
+background:linear-gradient(rgba(0,0,0,0)50%,rgba(0,0,0,.3)50%);
+background-size:100% 4px;
+opacity:.3;
+pointer-events:none;
+z-index:16;
+}
+
+
+/* =================================
+ROOM
+================================= */
+
+#scene-3d-container{
+position:absolute;
+width:100vw;
+height:100vh;
+perspective:600px;
+display:flex;
+justify-content:center;
+align-items:center;
+}
+
+#room{
+width:800px;
+height:600px;
+position:relative;
+transform-style:preserve-3d;
+
+animation:
+cameraZoom 4s forwards,
+roomBreath 8s ease-in-out infinite;
+}
+
+@keyframes cameraZoom{
+
+0%{
+transform:translate3d(0,0,-300px);
+}
+
+100%{
+transform:translate3d(0,0,280px);
+}
+
+}
+
+@keyframes roomBreath{
+
+0%{transform:translateZ(280px) scale(1);}
+50%{transform:translateZ(280px) scale(1.01);}
+100%{transform:translateZ(280px) scale(1);}
+
+}
+
+.wall{
+position:absolute;
+width:800px;
+height:600px;
+}
+
+.back-wall{
+background:#2a2a2a;
+transform:translateZ(-400px);
+}
+
+.left-wall{
+background:#1a1a1a;
+transform:translateX(-400px) rotateY(90deg);
+}
+
+.right-wall{
+background:#151515;
+transform:translateX(400px) rotateY(-90deg);
+}
+
+.floor{
+background:#4a2f1d;
+height:800px;
+top:-100px;
+transform:translateY(300px) rotateX(90deg);
+}
+
+.ceiling{
+background:#111;
+height:800px;
+top:-100px;
+transform:translateY(-300px) rotateX(-90deg);
+}
+
+.rug{
+position:absolute;
+width:300px;
+height:200px;
+background:#55FF55;
+border:10px solid #228B22;
+bottom:50px;
+left:250px;
+transform:rotateX(90deg) translateZ(290px);
+}
+
+
+/* =================================
+CLOCK
+================================= */
+
+.clock-container{
+position:absolute;
+top:100px;
+left:50%;
+transform:translateX(-50%);
+width:260px;
+height:260px;
+background:#0a0a0a;
+border:10px solid #333;
+border-radius:50%;
+}
+
+.center-dot{
+position:absolute;
+top:50%;
+left:50%;
+width:14px;
+height:14px;
+background:white;
+border-radius:50%;
+transform:translate(-50%,-50%);
+z-index:5;
+}
+
+.hand{
+position:absolute;
+bottom:50%;
+left:50%;
+transform-origin:bottom center;
+background:white;
+}
+
+#hour-hand{
+width:8px;
+height:70px;
+margin-left:-4px;
+}
+
+#minute-hand{
+width:6px;
+height:100px;
+margin-left:-3px;
+}
+
+#second-hand{
+width:4px;
+height:120px;
+margin-left:-2px;
+background:#FF5555;
+}
+
+
+/* =================================
+CLOCK NUMBERS
+================================= */
+
+.clock-number{
+position:absolute;
+font-family:'Press Start 2P';
+font-size:12px;
+color:white;
+}
+
+.n12{top:10px;left:50%;transform:translateX(-50%)}
+.n3{right:10px;top:50%;transform:translateY(-50%)}
+.n6{bottom:10px;left:50%;transform:translateX(-50%)}
+.n9{left:10px;top:50%;transform:translateY(-50%)}
+
+.n1{top:40px;right:60px}
+.n2{top:80px;right:20px}
+.n4{bottom:80px;right:20px}
+.n5{bottom:40px;right:60px}
+
+.n7{bottom:40px;left:60px}
+.n8{bottom:80px;left:20px}
+.n10{top:80px;left:20px}
+.n11{top:40px;left:60px}
+
+
+/* =================================
+DIGITAL CLOCK
+================================= */
+
+#digital-clock{
+
+position:absolute;
+top:390px;
+left:50%;
+transform:translateX(-50%);
+
+font-family:'Press Start 2P';
+font-size:18px;
+color:#FF3333;
+letter-spacing:3px;
+
+animation:clockGlow 2s ease-in-out infinite;
+
+}
+
+@keyframes clockGlow{
+
+0%{
+text-shadow:
+0 0 5px #FF0000,
+0 0 10px #FF0000,
+0 0 20px #FF0000;
+}
+
+50%{
+text-shadow:
+0 0 10px #FF0000,
+0 0 20px #FF0000,
+0 0 35px #FF0000;
+}
+
+100%{
+text-shadow:
+0 0 5px #FF0000,
+0 0 10px #FF0000,
+0 0 20px #FF0000;
+}
+
+}
+
+
+/* =================================
+CARD
+================================= */
+
+#scene-card,
+#scene-surprise{
+display:none;
+position:absolute;
+top:50%;
+left:50%;
+transform:translate(-50%,-50%);
+background:rgba(20,20,20,.65);
+backdrop-filter:blur(16px);
+border-radius:20px;
+padding:60px;
+max-width:600px;
+}
+
+.title-gradient{
+font-family:'Press Start 2P';
+font-size:2em;
+background:linear-gradient(90deg,#55FFFF,#55FF55,#FFFF55);
+-webkit-background-clip:text;
+-webkit-text-fill-color:transparent;
+}
+
+.username-badge{
+margin-top:20px;
+padding:10px 20px;
+border:1px solid #55FFFF;
+display:inline-block;
+}
+
+.pro-text{
+margin:30px 0;
+color:#bbb;
+}
+
+.btn-pro{
+background:#AA0000;
+color:white;
+border:none;
+padding:15px 30px;
+border-radius:30px;
+cursor:pointer;
+}
+
+
+/* =================================
+FLASH
+================================= */
+
+#flash-bang{
+position:absolute;
+width:100vw;
+height:100vh;
+background:white;
+opacity:0;
+pointer-events:none;
+z-index:50;
+}
+
+.flash{
+animation:flash 2s forwards;
+}
+
+@keyframes flash{
+
+0%{opacity:0}
+10%{opacity:1}
+100%{opacity:0}
+
+}
+
+
+/* =================================
+XP PARTICLES
+================================= */
+
+.xp{
+position:absolute;
+bottom:-20px;
+width:8px;
+height:8px;
+background:#55FF55;
+border-radius:50%;
+box-shadow:0 0 10px #55FF55;
+animation:xpRise 4s cubic-bezier(.25,.1,.25,1) forwards;
+}
+
+@keyframes xpRise{
+
+0%{
+transform:translate3d(0,0,0);
+opacity:0;
+}
+
+20%{
+opacity:1;
+}
+
+100%{
+transform:translate3d(0,-100vh,0);
+opacity:0;
+}
+
+}
+
+
+/* =================================
+FIREWORKS
+================================= */
+
+.firework{
+position:absolute;
+width:6px;
+height:6px;
+background:#55FFFF;
+border-radius:50%;
+pointer-events:none;
+animation:explode 2s forwards;
+}
+
+@keyframes explode{
+
+0%{
+transform:translate3d(0,0,0) scale(1);
+opacity:1;
+}
+
+70%{
+opacity:1;
+}
+
+100%{
+transform:translate3d(var(--x),var(--y),0) scale(.4);
+opacity:0;
+}
+
+}
+
+
+/* =================================
+SCREEN SHAKE
+================================= */
+
+.shake{
+animation:shake .5s;
+}
+
+@keyframes shake{
+
+0%{transform:translate3d(0,0,0)}
+20%{transform:translate3d(-4px,2px,0)}
+40%{transform:translate3d(4px,-2px,0)}
+60%{transform:translate3d(-3px,1px,0)}
+80%{transform:translate3d(3px,-1px,0)}
+100%{transform:translate3d(0,0,0)}
+
+}
+
+
+/* =================================
+MINECRAFT DIAMOND
+================================= */
+
+.diamond-wrapper{
+display:flex;
+justify-content:center;
+align-items:center;
+margin-bottom:30px;
+animation:diamondFloat 3s ease-in-out infinite;
+}
+
+@keyframes diamondFloat{
+
+0%{transform:translateY(0)}
+50%{transform:translateY(-20px)}
+100%{transform:translateY(0)}
+
+}
+
+.diamond{
+position:relative;
+width:120px;
+height:120px;
+transform-style:preserve-3d;
+animation:diamondSpin 6s linear infinite;
+filter:drop-shadow(0 0 25px #55FFFF);
+}
+
+@keyframes diamondSpin{
+
+0%{transform:rotateX(10deg) rotateY(0deg)}
+50%{transform:rotateX(15deg) rotateY(180deg)}
+100%{transform:rotateX(10deg) rotateY(360deg)}
+
+}
+
+.diamond-top{
+position:absolute;
+border-left:60px solid transparent;
+border-right:60px solid transparent;
+border-bottom:70px solid #55FFFF;
+}
+
+.diamond-bottom{
+position:absolute;
+top:70px;
+border-left:60px solid transparent;
+border-right:60px solid transparent;
+border-top:70px solid #33CCCC;
+}
+
+.diamond::after{
+content:"";
+position:absolute;
+top:50%;
+left:50%;
+width:160px;
+height:160px;
+transform:translate(-50%,-50%);
+border-radius:50%;
+background:radial-gradient(circle,#55FFFF44 0%,transparent 70%);
+animation:diamondGlow 2s infinite;
+}
+
+@keyframes diamondGlow{
+
+0%{opacity:.3;transform:translate(-50%,-50%) scale(1)}
+50%{opacity:1;transform:translate(-50%,-50%) scale(1.2)}
+100%{opacity:.3;transform:translate(-50%,-50%) scale(1)}
+
+}
+
+.diamond-burst{
+animation:diamondBurst .6s ease;
+}
+
+@keyframes diamondBurst{
+
+0%{transform:scale(.5)}
+50%{transform:scale(1.4)}
+100%{transform:scale(1)}
+
+}
+
+
+/* =================================
+TV
+================================= */
+
+.tv{
+position:absolute;
+width:200px;
+height:120px;
+background:#111;
+border:6px solid #222;
+right:40px;
+top:120px;
+overflow:hidden;
+}
+
+.tv-screen{
+width:100%;
+height:100%;
+display:flex;
+justify-content:center;
+align-items:center;
+font-family:'Press Start 2P';
+font-size:10px;
+color:#55FFFF;
+background:#000;
+text-align:center;
+opacity:.5;
+}
+
+.tv-on{
+animation:tvPower .4s ease forwards;
+}
+
+@keyframes tvPower{
+
+0%{transform:scaleY(.05);background:white}
+50%{transform:scaleY(.5)}
+100%{transform:scaleY(1)}
+
+}
+
+.tv-glitch{
+color:#FF5555;
+animation:glitch .2s infinite;
+}
+
+@keyframes glitch{
+
+0%{transform:translateX(0)}
+25%{transform:translateX(-2px)}
+50%{transform:translateX(2px)}
+75%{transform:translateX(-1px)}
+100%{transform:translateX(0)}
+
+}
