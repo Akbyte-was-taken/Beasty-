@@ -9,10 +9,19 @@ const digitalClock = document.getElementById("digital-clock")
 
 let midnightTriggered = false
 
+// Start clock at March 4, 11:59:55 PM (23:59:55) in local time
+const targetStart = new Date()
+targetStart.setMonth(2) // March (0=Jan)
+targetStart.setDate(4)
+targetStart.setHours(23, 59, 55, 0)
+
+// Offset to make "virtual" now equal to targetStart at initialization
+const offsetMs = targetStart.getTime() - Date.now()
 
 function update(){
 
-const now = new Date()
+// Virtual time (starts at targetStart and advances in real time)
+const now = new Date(Date.now() + offsetMs)
 
 /* extract time */
 
@@ -64,7 +73,7 @@ DEV SHORTCUTS
 
 document.addEventListener("keydown",(e)=>{
 
-if(e.key === "F8"){
+if(e.key === "F8"){ 
 
 speedMultiplier = speedMultiplier === 1 ? 60 : 1
 
@@ -78,10 +87,9 @@ speedMultiplier === 1
 
 })
 
-
 document.addEventListener("keydown",(e)=>{
 
-if(e.key === "F9"){
+if(e.key === "F9"){ 
 
 console.log("🚀 Forced Midnight Trigger")
 location.reload()
